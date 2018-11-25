@@ -184,11 +184,15 @@ namespace GTMT
                 Vector3 position = transform.InverseTransformPoint(hit.point);
                 HexCoordinate coordinate = HexCoordinate.FromPosition(position, HexMeshUtility.InnerRadius, HexMeshUtility.OuterRadius);
                 int index = coordinate.X + coordinate.Z * m_cellCountX + coordinate.Z / 2;
+                if(index < m_cells.Length)
+                {
+                    HexCell cell = m_cells[index];
+                    cell.Color = color;
+                    cell.SetElevation(elevation, elevationStep);
+                    cell.Refresh();
+                }
 
-                HexCell cell = m_cells[index];
-                cell.Color = color;
-                cell.SetElevation(elevation, elevationStep);
-                cell.Refresh();
+               
             }
         }
 
@@ -210,7 +214,13 @@ namespace GTMT
 
         public HexCell GetHexCell(int index)
         {
-            return m_cells[index];
+            if(index >= 0 && index < m_cells.Length)
+            {
+                return m_cells[index];
+            }
+
+            return null;
+           
         }
         #endregion
     }
