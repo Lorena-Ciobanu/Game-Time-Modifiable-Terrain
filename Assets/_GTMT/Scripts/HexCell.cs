@@ -26,7 +26,12 @@ namespace GTMT
         [SerializeField]
         private int[] m_neighbors;
 
+        [SerializeField]
+        private int m_waterLevel;
 
+
+
+        /* Render */
         public ref Vector3 Center
         {
             get { return ref m_center; }
@@ -52,12 +57,53 @@ namespace GTMT
             }
         }
 
+
+
+        /* Water */
+        public int WaterLevel
+        {
+            get
+            {
+                return m_waterLevel;
+            }
+            set
+            {
+                if(m_waterLevel == value)
+                {
+                    return;
+                }
+
+                m_waterLevel = value;
+            }
+        }
+
+        public bool IsUnderwater
+        {
+            get
+            {
+                return m_waterLevel > m_elevation;
+            }
+        }
+
+        public float WaterSurfaceY
+        {
+            get
+            {
+                return (m_waterLevel + HexMeshUtility.WaterElevationOffset) * HexMeshUtility.ElevationStep; 
+            }
+        }
+
+
+
+        /* Set Chunk */
         public void SetChunk(HexChunk chunk)
         {
             this.m_chunk = chunk;
         }
 
-        // Constructor
+
+
+        /* Constructor */
         public HexCell(HexGrid grid, int index, Vector3 center, HexCoordinate coordinate, Color color)
         {
             m_grid = grid;
@@ -110,23 +156,27 @@ namespace GTMT
         }
 
 
+        #endregion
+
+
+        /* Refresh
+         *  - responsable of calling refresh on entire chunk to reconstruct
+         */
         public void Refresh()
         {
             if (m_chunk)
             {
                 m_chunk.Reconstruct();
 
-                for(int i = 0; i < m_neighbors.Length; i++)
+                for (int i = 0; i < m_neighbors.Length; i++)
                 {
                     HexCell neighbor = m_grid.GetHexCell(m_neighbors[i]);
-                    if(neighbor != null && neighbor.m_chunk != m_chunk)
+                    if (neighbor != null && neighbor.m_chunk != m_chunk)
                     {
                         neighbor.m_chunk.Reconstruct();
                     }
                 }
             }
         }
-
-        #endregion
     }
 }

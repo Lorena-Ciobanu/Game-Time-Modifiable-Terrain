@@ -19,11 +19,13 @@ namespace GTMT
         public static float VerticalTeraceStepSize;
         public static int ChunkSizeX;
         public static int ChunkSizeZ;
+        public static float WaterElevationOffset;
+
         public static Vector3[] Corners;
 
 
         /* SetUp */
-        public static void SetUpUtility(float radius, float blendPercent, float elevationStep, float terracesPerSlope, int chunkSizeX, int chunkSizeZ)
+        public static void SetUpUtility(float radius, float blendPercent, float elevationStep, float terracesPerSlope, int chunkSizeX, int chunkSizeZ, float waterElevationOffset)
         {
             OuterRadius = radius;
             InnerRadius = radius * c_Radius;
@@ -39,11 +41,13 @@ namespace GTMT
             ChunkSizeX = chunkSizeX;
             ChunkSizeZ = chunkSizeZ;
 
+            WaterElevationOffset = waterElevationOffset;
+
             Corners = new Vector3[6];
-            Corners[0] = new Vector3(0f, 0f, OuterRadius);                      // Top Right
-            Corners[1] = new Vector3(InnerRadius, 0f, 0.5f * OuterRadius);      // Right
-            Corners[2] = new Vector3(InnerRadius, 0f, -0.5f * OuterRadius);     // Bottom Right
-            Corners[3] = new Vector3(0f, 0f, -OuterRadius);                     // Bottom Left
+            Corners[0] = new Vector3(0f, 0f, OuterRadius);                       // Top Right
+            Corners[1] = new Vector3(InnerRadius, 0f, 0.5f * OuterRadius);       // Right
+            Corners[2] = new Vector3(InnerRadius, 0f, -0.5f * OuterRadius);      // Bottom Right
+            Corners[3] = new Vector3(0f, 0f, -OuterRadius);                      // Bottom Left
             Corners[4] = new Vector3(-InnerRadius, 0f, -0.5f * OuterRadius);     // Left
             Corners[5] = new Vector3(-InnerRadius, 0f, 0.5f * OuterRadius);      // Top Left
 

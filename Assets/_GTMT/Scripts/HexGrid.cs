@@ -42,6 +42,10 @@ namespace GTMT
         [SerializeField]
         public HexChunk chunkPrefab;
 
+        [SerializeField]
+        public float waterElevationOffset = -0.5f;
+
+
 
         [Header("Active Modifications")]
         [SerializeField]
@@ -51,15 +55,17 @@ namespace GTMT
         private Color color = Color.cyan;
 
         [SerializeField]
-        private bool water = false;
+        private int waterLevel = 0;
+
 
         #endregion
+
+
 
         /* Private Fields  */
         private HexCell[] m_cells;
         private HexChunk[] m_chunks;
         
-
         private int m_cellCountX;
         private int m_cellCountZ;
 
@@ -70,11 +76,10 @@ namespace GTMT
             m_cellCountX = chunkCountX * chunkSizeX;
             m_cellCountZ = chunkCountZ * chunkSizeZ;
 
-            HexMeshUtility.SetUpUtility(hexRadius, blendPercent, elevationStep, terracesPerSlope, chunkSizeX, chunkSizeZ);
+            HexMeshUtility.SetUpUtility(hexRadius, blendPercent, elevationStep, terracesPerSlope, chunkSizeX, chunkSizeZ, waterElevationOffset);
 
             GenerateChunks();
-            GenerateCells();
-           
+            GenerateCells();   
         }
 
 
@@ -189,6 +194,7 @@ namespace GTMT
                     HexCell cell = m_cells[index];
                     cell.Color = color;
                     cell.SetElevation(elevation, elevationStep);
+                    cell.WaterLevel = waterLevel;
                     cell.Refresh();
                 }
 
@@ -197,6 +203,7 @@ namespace GTMT
         }
 
 
+        /* Update */
         private void Update()
         {
             if (Input.GetMouseButtonDown(0))
