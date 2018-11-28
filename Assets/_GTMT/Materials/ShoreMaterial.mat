@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterMaterial
-  m_Shader: {fileID: 4800000, guid: 1a276dab88202d34e8884927170b61cc, type: 3}
+  m_Name: ShoreMaterial
+  m_Shader: {fileID: 4800000, guid: 35fa3a78eede8744dbf466becd7b0b35, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: f481566b81c916844b22c9ecbfe5a70f, type: 3}
+        m_Texture: {fileID: 2800000, guid: f62a7f293b2c9854784ee8003ba4e6df, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -80,5 +80,5 @@ Material:
     - _UseUIAlphaClip: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.26099145, g: 0.7407503, b: 0.8018868, a: 0.21568628}
+    - _Color: {r: 0.12771447, g: 0.56545556, b: 0.7735849, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

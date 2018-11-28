@@ -93,7 +93,7 @@ namespace GTMT
         }
 
 
-        /* Add Traingles / Quads / Colors */
+        /* Geometry [Triangles + Quads] */
         public void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             int vertexIndex = m_vertices.Count;
@@ -105,20 +105,6 @@ namespace GTMT
             m_triangles.Add(vertexIndex++);
             m_triangles.Add(vertexIndex++);
             m_triangles.Add(vertexIndex);
-        }
-
-        public void AddTriangleColor(Color c)
-        {
-            m_colors.Add(c);
-            m_colors.Add(c);
-            m_colors.Add(c);
-        }
-
-        public void AddTriangleColor(Color c1, Color c2, Color c3)
-        {
-            m_colors.Add(c1);
-            m_colors.Add(c2);
-            m_colors.Add(c3);
         }
 
         public void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4)
@@ -138,6 +124,22 @@ namespace GTMT
             m_triangles.Add(vertexIndex + 3);
         }
 
+
+        /* Colors */
+        public void AddTriangleColor(Color c)
+        {
+            m_colors.Add(c);
+            m_colors.Add(c);
+            m_colors.Add(c);
+        }
+
+        public void AddTriangleColor(Color c1, Color c2, Color c3)
+        {
+            m_colors.Add(c1);
+            m_colors.Add(c2);
+            m_colors.Add(c3);
+        }
+
         public void AddQuadColor(Color c1, Color c2, Color c3, Color c4)
         {
             m_colors.Add(c1);
@@ -152,6 +154,23 @@ namespace GTMT
             m_colors.Add(c1);
             m_colors.Add(c2);
             m_colors.Add(c2);
+        }
+
+
+        /* UV's */
+        public void AddTriangleUV(Vector2 uv1, Vector2 uv2, Vector3 uv3)
+        {
+            m_uv.Add(uv1);
+            m_uv.Add(uv2);
+            m_uv.Add(uv3);
+        }
+
+        public void AddQuadUV(float uMin, float uMax, float vMin, float vMax)
+        {
+            m_uv.Add(new Vector2(uMin, vMin));
+            m_uv.Add(new Vector2(uMax, vMin));
+            m_uv.Add(new Vector2(uMin, vMax));
+            m_uv.Add(new Vector2(uMax, vMax));
         }
 
 

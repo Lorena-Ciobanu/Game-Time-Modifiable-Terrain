@@ -632,10 +632,10 @@ namespace GTMT
 
             HexEdgeVertices e1 = new HexEdgeVertices(c1, c2);
 
-            m_waterShoreMesh.AddTriangle(center, e1.v1, e1.v2);
-            m_waterShoreMesh.AddTriangle(center, e1.v2, e1.v3);
-            m_waterShoreMesh.AddTriangle(center, e1.v3, e1.v4);
-            m_waterShoreMesh.AddTriangle(center, e1.v4, e1.v5);
+            m_waterMesh.AddTriangle(center, e1.v1, e1.v2);
+            m_waterMesh.AddTriangle(center, e1.v2, e1.v3);
+            m_waterMesh.AddTriangle(center, e1.v3, e1.v4);
+            m_waterMesh.AddTriangle(center, e1.v4, e1.v5);
 
             Vector3 bridge = HexMeshUtility.GetBridgeSimple(direction);
             HexEdgeVertices e2 = new HexEdgeVertices(e1.v1 + bridge, e1.v5 + bridge);
@@ -644,10 +644,16 @@ namespace GTMT
             m_waterShoreMesh.AddQuad(e1.v3, e1.v4, e2.v3, e2.v4);
             m_waterShoreMesh.AddQuad(e1.v4, e1.v5, e2.v4, e2.v5);
 
+            m_waterShoreMesh.AddQuadUV(0f, 0f, 0f, 1f);
+            m_waterShoreMesh.AddQuadUV(0f, 0f, 0f, 1f);
+            m_waterShoreMesh.AddQuadUV(0f, 0f, 0f, 1f);
+            m_waterShoreMesh.AddQuadUV(0f, 0f, 0f, 1f);
+
             HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
             if(nextNeighbor != null)
             {
                 m_waterShoreMesh.AddTriangle(e1.v5, e2.v5, c2 + HexMeshUtility.GetBridgeSimple(direction.Next()));
+                m_waterShoreMesh.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, nextNeighbor.IsUnderwater ? 0f : 1f));
             }
         }
 

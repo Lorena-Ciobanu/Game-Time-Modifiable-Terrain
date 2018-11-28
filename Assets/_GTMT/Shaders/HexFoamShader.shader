@@ -1,5 +1,5 @@
 ﻿
-Shader "Hex Grid/HexWaterShader"
+Shader "Hex Grid/HexFoamShader"
 {
     Properties
     {
@@ -41,14 +41,29 @@ Shader "Hex Grid/HexWaterShader"
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-			float2 uv = IN.worldPos.xz;
+			/*float2 uv = IN.worldPos.xz;
 			uv.y += _Time.y;
-			float4 noise = tex2D(_MainTex, uv * 0.025);
+			float4 noise = tex2D(_MainTex, uv * 0.008);
 			float waves = noise.z;
-            fixed4 c = saturate(_Color + waves); 
+            fixed4 c = saturate(_Color + waves);  */
 
-			//fixed4 c = _Color;
+			float shore = IN.uv_MainTex.y;
+			shore = sqrt(shore);
 
+
+			float2 noiseUV = IN.worldPos.xz + _Time.y * 0.25;
+			float4 noise = tex2D(_MainTex, noiseUV * 0.015);
+
+			float distortion = noise.x * (1 - shore);
+
+			
+			float foam = sin( (shore + distortion) * 10 - _Time.y);
+			foam *= foam * shore;
+
+			// Show UV's
+			//fixed4 c = fixed4(IN.uv_MainTex, 1, 1);
+
+			fixed4 c = saturate(_Color + foam);
 
             o.Albedo = c.rgb;
             o.Metallic = _Metallic;
