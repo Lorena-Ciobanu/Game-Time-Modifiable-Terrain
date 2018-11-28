@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace GTMT
 {
@@ -59,7 +60,6 @@ namespace GTMT
 
 
         #endregion
-
 
 
         /* Private Fields  */
@@ -192,13 +192,16 @@ namespace GTMT
                 if(index < m_cells.Length)
                 {
                     HexCell cell = m_cells[index];
-                    cell.Color = color;
-                    cell.SetElevation(elevation, elevationStep);
-                    cell.WaterLevel = waterLevel;
-                    cell.Refresh();
+                    Debug.Log(cell.Elevation+" "+elevation);
+                    if (cell.Color != color || cell.Elevation != elevation || cell.WaterLevel != waterLevel)
+                    {
+                        // Edit Cell
+                        cell.Color = color;
+                        cell.SetElevation(elevation, elevationStep);
+                        cell.WaterLevel = waterLevel;
+                        cell.Refresh();
+                    }
                 }
-
-               
             }
         }
 
@@ -206,7 +209,7 @@ namespace GTMT
         /* Update */
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0) )
             {
                 HandleInput();
             }

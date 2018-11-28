@@ -68,10 +68,10 @@ namespace GTMT
 
 
         /* Bridge */
-        public static Vector3 GetBridgeComplex(HexDirection direction)
+     /*   public static Vector3 GetBridgeComplex(HexDirection direction)
         {
             return (Corners[(int)direction] + Corners[(int)direction.Next()]) * 0.5f * BlendPercent;
-        }
+        } */
 
         public static Vector3 GetBridgeSimple(HexDirection direction)
         {
