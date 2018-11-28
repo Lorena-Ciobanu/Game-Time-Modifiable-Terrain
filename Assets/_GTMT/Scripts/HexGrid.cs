@@ -23,22 +23,25 @@ namespace GTMT
         private int terracesPerSlope = 2;
 
         [SerializeField]
+        private bool useTextures = true;
+
+        [SerializeField]
         private Color defaultColor = Color.white;
 
 
 
         [Header("Hex Grid Settings")]
         [SerializeField]
-        private int chunkSizeX = 5;
+        private int hexesPerChunkX = 5;
 
         [SerializeField]
-        private int chunkSizeZ = 5;
+        private int hexesPerChunkZ = 5;
 
         [SerializeField]
-        private int chunkCountX = 4;
+        private int numberOfChunksX = 4;
 
         [SerializeField]
-        private int chunkCountZ = 3;
+        private int numberOfChunksZ = 3;
 
         [SerializeField]
         public HexChunk chunkPrefab;
@@ -73,10 +76,10 @@ namespace GTMT
         /* Awake */
         private void Awake()
         {
-            m_cellCountX = chunkCountX * chunkSizeX;
-            m_cellCountZ = chunkCountZ * chunkSizeZ;
+            m_cellCountX = numberOfChunksX * hexesPerChunkX;
+            m_cellCountZ = numberOfChunksZ * hexesPerChunkZ;
 
-            HexMeshUtility.SetUpUtility(hexRadius, blendPercent, elevationStep, terracesPerSlope, chunkSizeX, chunkSizeZ, waterElevationOffset);
+            HexMeshUtility.SetUpUtility(hexRadius, blendPercent, elevationStep, terracesPerSlope, hexesPerChunkX, hexesPerChunkZ, waterElevationOffset, useTextures);
 
             GenerateChunks();
             GenerateCells();   
@@ -86,11 +89,11 @@ namespace GTMT
         /* Generate Chunks */
         private void GenerateChunks()
         {
-            m_chunks = new HexChunk[chunkCountX * chunkCountZ];
+            m_chunks = new HexChunk[numberOfChunksX * numberOfChunksZ];
 
-            for(int z = 0, i = 0; z < chunkCountZ; z++)
+            for(int z = 0, i = 0; z < numberOfChunksZ; z++)
             {
-                for(int x = 0; x < chunkCountX; x++)
+                for(int x = 0; x < numberOfChunksX; x++)
                 {
                     HexChunk chunk = m_chunks[i++] = Instantiate(chunkPrefab);
                     chunk.transform.SetParent(transform);
@@ -169,13 +172,13 @@ namespace GTMT
         /* Add Cell To Chunk*/
         private void AddCellToChunk(int x, int z, ref HexCell cell)
         {
-            int chunkX = x / chunkSizeX;
-            int chunkZ = z / chunkSizeZ;
-            HexChunk chunk = m_chunks[chunkX + chunkZ * chunkCountX];  
+            int chunkX = x / hexesPerChunkX;
+            int chunkZ = z / hexesPerChunkZ;
+            HexChunk chunk = m_chunks[chunkX + chunkZ * numberOfChunksX];  
 
-            int localX = x - chunkX * chunkSizeX;
-            int localZ = z - chunkZ * chunkSizeZ;
-            chunk.AddCell(localX + localZ * chunkSizeX, ref cell);
+            int localX = x - chunkX * hexesPerChunkX;
+            int localZ = z - chunkZ * hexesPerChunkZ;
+            chunk.AddCell(localX + localZ * hexesPerChunkX, ref cell);
         }
 
 

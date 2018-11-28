@@ -11,7 +11,10 @@ namespace GTMT
         /* Public Fields [set through prefab] */
         [SerializeField]
         private bool useCollider;
-        
+
+        [SerializeField]
+        private bool useTerrainTypes;
+
 
         /* Private Fields */
         private List<Vector3> m_vertices;

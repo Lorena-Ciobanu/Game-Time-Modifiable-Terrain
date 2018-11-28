@@ -20,12 +20,13 @@ namespace GTMT
         public static int ChunkSizeX;
         public static int ChunkSizeZ;
         public static float WaterElevationOffset;
+        public static bool UseTextures;
 
         public static Vector3[] Corners;
 
 
         /* SetUp */
-        public static void SetUpUtility(float radius, float blendPercent, float elevationStep, float terracesPerSlope, int chunkSizeX, int chunkSizeZ, float waterElevationOffset)
+        public static void SetUpUtility(float radius, float blendPercent, float elevationStep, float terracesPerSlope, int chunkSizeX, int chunkSizeZ, float waterElevationOffset, bool useTextures)
         {
             OuterRadius = radius;
             InnerRadius = radius * c_Radius;
@@ -42,6 +43,8 @@ namespace GTMT
             ChunkSizeZ = chunkSizeZ;
 
             WaterElevationOffset = waterElevationOffset;
+
+            UseTextures = useTextures;
 
             Corners = new Vector3[6];
             Corners[0] = new Vector3(0f, 0f, OuterRadius);                       // Top Right

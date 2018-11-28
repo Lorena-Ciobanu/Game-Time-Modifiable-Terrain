@@ -17,6 +17,12 @@ namespace GTMT
         private HexMesh m_waterShoreMesh;
 
 
+        /* Splat Map Colors */
+        private static Color m_red = new Color(1f, 0f, 0f);         // Color 1 - First Texture Chanel
+        private static Color m_green = new Color(0f, 1f, 0f);       // Color 2 - Second Texture Chanel
+        private static Color m_blue = new Color(0f, 0f, 1f);        // Color 3 - Third Texture Chanel
+        
+
 
         /* Cells coresponding to this chunk */
         private HexCell[] m_cells;
@@ -98,7 +104,16 @@ namespace GTMT
             Vector3 v2 = center + (HexMeshUtility.GetCornerB(direction) * HexMeshUtility.SolidPercent);
 
             m_terrainMesh.AddTriangle(center, v1, v2);
-            m_terrainMesh.AddTriangleColor(cell.Color);
+
+            if (HexMeshUtility.UseTextures)
+            {
+                m_terrainMesh.AddTriangleColor(m_red);
+            }
+            else
+            {
+                m_terrainMesh.AddTriangleColor(cell.Color);
+            }
+           
 
             // Create connection
             if (direction <= HexDirection.BottomRight)
@@ -119,7 +134,16 @@ namespace GTMT
                     else
                     {
                         m_terrainMesh.AddQuad(v1, v2, v3, v4);
-                        m_terrainMesh.AddQuadColor(cell.Color, neighbor.Color);
+
+                        if (HexMeshUtility.UseTextures)
+                        {
+                            m_terrainMesh.AddQuadColor(m_red, m_green);
+                        }
+                        else
+                        {
+                            m_terrainMesh.AddQuadColor(cell.Color, neighbor.Color);
+                        }
+                       
                     }
 
 
@@ -161,10 +185,22 @@ namespace GTMT
         {
             Vector3 v3 = HexMeshUtility.TerraceLerp(beginLeft, endLeft, 1);
             Vector3 v4 = HexMeshUtility.TerraceLerp(beginRight, endRight, 1);
-            Color c2 = HexMeshUtility.TerraceLerp(beginCell.Color, endCell.Color, 1);
 
-            m_terrainMesh.AddQuad(beginLeft, beginRight, v3, v4);
-            m_terrainMesh.AddQuadColor(beginCell.Color, c2);
+            Color c2;
+
+            if (HexMeshUtility.UseTextures)
+            {
+                c2 = HexMeshUtility.TerraceLerp(m_red, m_green, 1);
+                m_terrainMesh.AddQuad(beginLeft, beginRight, v3, v4);
+                m_terrainMesh.AddQuadColor(m_red, c2);
+            }
+            else
+            {
+                c2 = HexMeshUtility.TerraceLerp(beginCell.Color, endCell.Color, 1);
+                m_terrainMesh.AddQuad(beginLeft, beginRight, v3, v4);
+                m_terrainMesh.AddQuadColor(beginCell.Color, c2);
+            }
+
 
             for (int i = 2; i < HexMeshUtility.TerraceSteps; i++)
             {
@@ -173,14 +209,30 @@ namespace GTMT
                 Color c1 = c2;
                 v3 = HexMeshUtility.TerraceLerp(beginLeft, endLeft, i);
                 v4 = HexMeshUtility.TerraceLerp(beginRight, endRight, i);
-                c2 = HexMeshUtility.TerraceLerp(beginCell.Color, endCell.Color, i);
+                if (HexMeshUtility.UseTextures)
+                {
+                    c2 = HexMeshUtility.TerraceLerp(m_red, m_green, i);
+                }
+                else
+                {
+                    c2 = HexMeshUtility.TerraceLerp(beginCell.Color, endCell.Color, i);
+                }
+                
                 m_terrainMesh.AddQuad(v1, v2, v3, v4);
                 m_terrainMesh.AddQuadColor(c1, c2);
             }
 
 
             m_terrainMesh.AddQuad(v3, v4, endLeft, endRight);
-            m_terrainMesh.AddQuadColor(c2, endCell.Color);
+            if (HexMeshUtility.UseTextures)
+            {
+                m_terrainMesh.AddQuadColor(c2, m_red);          // TODO figure out if this should be red
+            }
+            else
+            {
+                m_terrainMesh.AddQuadColor(c2, endCell.Color);
+            }
+           
         }
 
 
@@ -232,7 +284,15 @@ namespace GTMT
             else
             {
                 m_terrainMesh.AddTriangle(bottom, left, right);
-                m_terrainMesh.AddTriangleColor(bottomCell.Color, leftCell.Color, rightCell.Color);
+                if (HexMeshUtility.UseTextures)
+                {
+                    m_terrainMesh.AddTriangleColor(m_red, m_green, m_blue);
+                }
+                else
+                {
+                    m_terrainMesh.AddTriangleColor(bottomCell.Color, leftCell.Color, rightCell.Color);
+                }
+                
             }
         }
 
@@ -242,8 +302,19 @@ namespace GTMT
         {
             Vector3 v3 = HexMeshUtility.TerraceLerp(begin, left, 1);
             Vector3 v4 = HexMeshUtility.TerraceLerp(begin, right, 1);
-            Color c3 = HexMeshUtility.TerraceLerp(beginCell.Color, leftCell.Color, 1);
-            Color c4 = HexMeshUtility.TerraceLerp(beginCell.Color, rightCell.Color, 1);
+            Color c3, c4;
+
+            if (HexMeshUtility.UseTextures)
+            {
+                c3 = HexMeshUtility.TerraceLerp(m_red, m_green, 1);
+                c4 = HexMeshUtility.TerraceLerp(m_red, m_blue, 1);
+            }
+            else
+            {
+                c3 = HexMeshUtility.TerraceLerp(beginCell.Color, leftCell.Color, 1);
+                c4 = HexMeshUtility.TerraceLerp(beginCell.Color, rightCell.Color, 1);
+            }
+            
 
             m_terrainMesh.AddTriangle(begin, v3, v4);
             m_terrainMesh.AddTriangleColor(beginCell.Color, c3, c4);
@@ -256,14 +327,33 @@ namespace GTMT
                 Color c2 = c4;
                 v3 = HexMeshUtility.TerraceLerp(begin, left, i);
                 v4 = HexMeshUtility.TerraceLerp(begin, right, i);
-                c3 = HexMeshUtility.TerraceLerp(beginCell.Color, leftCell.Color, i);
-                c4 = HexMeshUtility.TerraceLerp(beginCell.Color, rightCell.Color, i);
+
+                if (HexMeshUtility.UseTextures)
+                {
+                    c3 = HexMeshUtility.TerraceLerp(m_red, m_green, i);
+                    c4 = HexMeshUtility.TerraceLerp(m_red, m_blue, i);
+                }
+                else
+                {
+                    c3 = HexMeshUtility.TerraceLerp(beginCell.Color, leftCell.Color, i);
+                    c4 = HexMeshUtility.TerraceLerp(beginCell.Color, rightCell.Color, i);
+                }
+               
                 m_terrainMesh.AddQuad(v1, v2, v3, v4);
                 m_terrainMesh.AddQuadColor(c1, c2, c3, c4);
             }
 
             m_terrainMesh.AddQuad(v3, v4, left, right);
-            m_terrainMesh.AddQuadColor(c3, c4, leftCell.Color, rightCell.Color);
+
+            if (HexMeshUtility.UseTextures)
+            {
+                m_terrainMesh.AddQuadColor(c3, c4, m_green, m_blue);
+            }
+            else
+            {
+                m_terrainMesh.AddQuadColor(c3, c4, leftCell.Color, rightCell.Color);
+            }
+           
         }
 
 
@@ -273,18 +363,45 @@ namespace GTMT
             float b = 1f / (rightCell.Elevation - beginCell.Elevation);
             if (b < 0) { b = -b; }
             Vector3 boundary = Vector3.Lerp(begin, right, b);
-            Color boundaryColor = Color.Lerp(beginCell.Color, rightCell.Color, b);
+            Color boundaryColor;
 
-            TriangulateBoundaryTriangle(begin, beginCell, left, leftCell, boundary, boundaryColor);
+            if (HexMeshUtility.UseTextures)
+            {
+                boundaryColor = Color.Lerp(m_red, m_blue, b);
+                TriangulateBoundaryTriangle(begin, m_red, left, m_green, boundary, boundaryColor);
+            }
+            else
+            {
+                boundaryColor = Color.Lerp(beginCell.Color, rightCell.Color, b);
+                TriangulateBoundaryTriangle(begin, beginCell, left, leftCell, boundary, boundaryColor);
+            }
+  
 
             if (leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope)
             {
-                TriangulateBoundaryTriangle(left, leftCell, right, rightCell, boundary, boundaryColor);
+                if (HexMeshUtility.UseTextures)
+                {
+                    TriangulateBoundaryTriangle(left, m_green, right, m_blue, boundary, boundaryColor);
+                }
+                else
+                {
+                    TriangulateBoundaryTriangle(left, leftCell, right, rightCell, boundary, boundaryColor);
+                }
+                
             }
             else
             {
                 m_terrainMesh.AddTriangle(left, right, boundary);
-                m_terrainMesh.AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
+
+                if (HexMeshUtility.UseTextures)
+                {
+                    m_terrainMesh.AddTriangleColor(m_green, m_blue, boundaryColor);
+                }
+                else
+                {
+                    m_terrainMesh.AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
+                }
+               
             }
 
         }
@@ -296,8 +413,20 @@ namespace GTMT
             float b = 1f / (leftCell.Elevation - beginCell.Elevation);
             if (b < 0) { b = -b; }
             Vector3 boundary = Vector3.Lerp(begin, left, b);
-            Color boundaryColor = Color.Lerp(beginCell.Color, leftCell.Color, b);
-            TriangulateBoundaryTriangle(right, rightCell, begin, beginCell, boundary, boundaryColor);
+            Color boundaryColor;
+
+            if (HexMeshUtility.UseTextures)
+            {
+                boundaryColor = Color.Lerp(m_red, m_green, b);
+                TriangulateBoundaryTriangle(right, m_blue, begin, m_red, boundary, boundaryColor);
+            }
+            else
+            {
+                boundaryColor = Color.Lerp(beginCell.Color, leftCell.Color, b);
+                TriangulateBoundaryTriangle(right, m_green, begin, m_blue, boundary, boundaryColor);
+            }
+
+           
 
             if (leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope)
             {
@@ -306,13 +435,22 @@ namespace GTMT
             else
             {
                 m_terrainMesh.AddTriangle(left, right, boundary);
-                m_terrainMesh.AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
+
+                if (HexMeshUtility.UseTextures)
+                {
+                    m_terrainMesh.AddTriangleColor(m_green, m_blue, boundaryColor);
+                }
+                else
+                {
+                    m_terrainMesh.AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
+                }
+               
             }
 
         }
 
 
-        /* Triangulate Boundary Triangle */
+        /* Triangulate Boundary Triangle (using Color) */
         private void TriangulateBoundaryTriangle(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 boundary, Color boundaryColor)
         {
             Vector3 v2 = HexMeshUtility.TerraceLerp(begin, left, 1);
@@ -334,6 +472,31 @@ namespace GTMT
             m_terrainMesh.AddTriangle(v2, left, boundary);
             m_terrainMesh.AddTriangleColor(c2, leftCell.Color, boundaryColor);
         }
+
+
+        /* Triangulate Boundary Triangle  (using Textures) */
+        private void TriangulateBoundaryTriangle(Vector3 begin, Color beginColor, Vector3 left, Color leftColor, Vector3 boundary, Color boundaryColor)
+        {
+            Vector3 v2 = HexMeshUtility.TerraceLerp(begin, left, 1);
+            Color c2 = HexMeshUtility.TerraceLerp(beginColor, leftColor, 1);
+
+            m_terrainMesh.AddTriangle(begin, v2, boundary);
+            m_terrainMesh.AddTriangleColor(beginColor, c2, boundaryColor);
+
+            for (int i = 2; i < HexMeshUtility.TerraceSteps; i++)
+            {
+                Vector3 v1 = v2;
+                Color c1 = c2;
+                v2 = HexMeshUtility.TerraceLerp(begin, left, i);
+                c2 = HexMeshUtility.TerraceLerp(beginColor, leftColor, i);
+                m_terrainMesh.AddTriangle(v1, v2, boundary);
+                m_terrainMesh.AddTriangleColor(c1, c2, boundaryColor);
+            }
+
+            m_terrainMesh.AddTriangle(v2, left, boundary);
+            m_terrainMesh.AddTriangleColor(c2, leftColor, boundaryColor);
+        }
+
 
 
         /* Triangulate Water */

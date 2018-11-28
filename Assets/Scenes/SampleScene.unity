@@ -326,17 +326,18 @@ MonoBehaviour:
   hexRadius: 1
   blendPercent: 0.25
   elevationStep: 0.5
-  terracesPerSlope: 2
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
-  chunkSizeX: 4
-  chunkSizeZ: 5
-  chunkCountX: 4
-  chunkCountZ: 3
+  terracesPerSlope: 1
+  useTextures: 1
+  defaultColor: {r: 0.10715558, g: 0.5283019, b: 0.17399591, a: 1}
+  hexesPerChunkX: 5
+  hexesPerChunkZ: 5
+  numberOfChunksX: 4
+  numberOfChunksZ: 3
   chunkPrefab: {fileID: 6500220928805118633, guid: 9d7fa6d8489921c4eaf37e8109ac68af,
     type: 3}
   waterElevationOffset: -0.5
   elevation: 1
-  color: {r: 0.1511659, g: 0.745283, b: 0.22992817, a: 1}
+  color: {r: 0.15294117, g: 0.7049797, b: 0.74509805, a: 1}
   waterLevel: 0
 --- !u!4 &739990092
 Transform:
