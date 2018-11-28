@@ -259,7 +259,7 @@ namespace GTMT
            
             if (HexMeshUtility.UseTextures)
             {
-                m_terrainMesh.AddQuadColor(c2, m_red);          // TODO figure out if this should be red
+                m_terrainMesh.AddQuadColor(c2, m_green);          // TODO figure out if this should be red
                 AddQuadType(beginCell.TerrainTypeIndex, endCell.TerrainTypeIndex);
             }
             else
