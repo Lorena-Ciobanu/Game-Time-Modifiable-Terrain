@@ -21,6 +21,7 @@ namespace GTMT
         private List<int> m_triangles;
         private List<Vector2> m_uv;
         private List<Color> m_colors;
+        private List<Vector3> m_terrainTypes;
 
         private Mesh m_mesh;
         private MeshCollider m_meshCollider;
@@ -50,6 +51,11 @@ namespace GTMT
             m_triangles = HexObjectPool<int>.Get();
             m_colors = HexObjectPool<Color>.Get();
             m_uv = HexObjectPool<Vector2>.Get();
+
+            if (useTerrainTypes)
+            {
+                m_terrainTypes = HexObjectPool<Vector3>.Get();
+            }
         }
 
 
@@ -67,6 +73,12 @@ namespace GTMT
 
             m_mesh.SetColors(m_colors);
             HexObjectPool<Color>.Relese(m_colors);
+
+            if (useTerrainTypes)
+            {
+                m_mesh.SetUVs(2, m_terrainTypes);
+                HexObjectPool<Vector3>.Relese(m_terrainTypes);
+            }
 
             m_mesh.RecalculateNormals();
             m_mesh.RecalculateBounds();         // TODO see if these two are necessary
@@ -142,6 +154,23 @@ namespace GTMT
             m_colors.Add(c2);
         }
 
+
+
+        /* Terrain Types [Textures] */
+        public void AddTriangleTerrainTypes(Vector3 types)
+        {
+            m_terrainTypes.Add(types);
+            m_terrainTypes.Add(types);
+            m_terrainTypes.Add(types);
+        }
+
+        public void AddQuadTerrainTypes(Vector3 types)
+        {
+            m_terrainTypes.Add(types);
+            m_terrainTypes.Add(types);
+            m_terrainTypes.Add(types);
+            m_terrainTypes.Add(types);
+        }
     }
 }
 

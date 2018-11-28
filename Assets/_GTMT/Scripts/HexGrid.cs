@@ -61,6 +61,8 @@ namespace GTMT
         [SerializeField]
         private int waterLevel = 0;
 
+        [SerializeField]
+        private int terrainIndex = 0;
 
         #endregion
 
@@ -195,13 +197,13 @@ namespace GTMT
                 if(index < m_cells.Length)
                 {
                     HexCell cell = m_cells[index];
-                    Debug.Log(cell.Elevation+" "+elevation);
-                    if (cell.Color != color || cell.Elevation != elevation || cell.WaterLevel != waterLevel)
+                    if (cell.Color != color || cell.Elevation != elevation || cell.WaterLevel != waterLevel || cell.TerrainTypeIndex != terrainIndex)
                     {
                         // Edit Cell
                         cell.Color = color;
                         cell.SetElevation(elevation, elevationStep);
                         cell.WaterLevel = waterLevel;
+                        cell.TerrainTypeIndex = terrainIndex;
                         cell.Refresh();
                     }
                 }

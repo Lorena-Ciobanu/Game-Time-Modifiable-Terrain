@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useCollider: 0
+  useTerrainTypes: 0
 --- !u!1 &1518567638721184489
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,6 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useCollider: 0
+  useTerrainTypes: 0
 --- !u!1 &6500220928805118637
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,6 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useCollider: 1
+  useTerrainTypes: 1
 --- !u!1 &8315344275752206228
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,3 +417,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useCollider: 1
+  useTerrainTypes: 0

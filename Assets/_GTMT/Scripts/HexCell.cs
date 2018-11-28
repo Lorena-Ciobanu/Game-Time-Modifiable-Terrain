@@ -29,6 +29,9 @@ namespace GTMT
         [SerializeField]
         private int m_waterLevel;
 
+        [SerializeField]
+        private int m_terrainTypeIndex;
+
 
 
         /* Render */
@@ -54,6 +57,21 @@ namespace GTMT
             get
             {
                 return m_elevation;
+            }
+        }
+
+        public int TerrainTypeIndex
+        {
+            get
+            {
+                return m_terrainTypeIndex;
+            }
+            set
+            {
+                if(m_terrainTypeIndex != value)
+                {
+                    m_terrainTypeIndex = value;
+                }
             }
         }
 
@@ -92,6 +110,7 @@ namespace GTMT
                 return (m_waterLevel + HexMeshUtility.WaterElevationOffset) * HexMeshUtility.ElevationStep; 
             }
         }
+
 
 
 

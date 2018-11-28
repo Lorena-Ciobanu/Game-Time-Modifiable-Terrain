@@ -16,7 +16,7 @@ Shader "Hex Grid/HexTextureShader"
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard fullforwardshadows vertex:vert
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.5
@@ -27,7 +27,19 @@ Shader "Hex Grid/HexTextureShader"
         {
 			float4 color: COLOR;
 			float3 worldPos;
+			float3 terrain;
         };
+
+		void vert(inout appdata_full v, out Input data) {
+			UNITY_INITIALIZE_OUTPUT(Input, data);
+			data.terrain = v.texcoord2.xyz;
+		}
+
+		float4 GetTerrainColor(Input IN, int index) {
+			float3 uvw = float3(IN.worldPos.xz * 0.2, IN.terrain[index]);
+			float4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, uvw);
+			return c * IN.color[index];
+		}
 
         half _Glossiness;
         half _Metallic;
@@ -42,8 +54,10 @@ Shader "Hex Grid/HexTextureShader"
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-			float2 uv = IN.worldPos.xz * 0.04;					// Affect tiling (0.02)
-            fixed4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, float3(uv, 0));
+			//float2 uv = IN.worldPos.xz * 0.04;					// Affect tiling (0.02)
+            //fixed4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, float3(uv, 0));
+
+			fixed4 c = GetTerrainColor(IN, 0) + GetTerrainColor(IN, 1) + GetTerrainColor(IN, 2);
 
             o.Albedo = c.rgb * _Color;
             // Metallic and smoothness come from slider variables
