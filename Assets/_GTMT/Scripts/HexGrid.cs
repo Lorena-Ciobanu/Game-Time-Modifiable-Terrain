@@ -50,8 +50,22 @@ namespace GTMT
         public float waterElevationOffset = -0.5f;
 
 
+        [Header("Hex Display Settings")]
+        [SerializeField]
+        private bool showGrid = false;
+        [SerializeField]
+        private Material terrainMaterial;
+
+
+        [Header("Pathing")]
+        [SerializeField]
+        private HexPawn pawnPrefab;
+
 
         [Header("Active Modifications")]
+      //  [SerializeField]
+     //   private bool editMode = true;
+
         [SerializeField]
         private int elevation = 0;
 
@@ -64,6 +78,7 @@ namespace GTMT
         [SerializeField]
         private int terrainIndex = 0;
 
+
         #endregion
 
 
@@ -74,20 +89,44 @@ namespace GTMT
         private int m_cellCountX;
         private int m_cellCountZ;
 
+        /* Pathing */
+        private HexPawn m_pawn;
+        private HexCell m_targetCell;
+
 
         /* Awake */
         private void Awake()
         {
+            // Performance setting
+            QualitySettings.vSyncCount = 0;
+
+
+
             m_cellCountX = numberOfChunksX * hexesPerChunkX;
             m_cellCountZ = numberOfChunksZ * hexesPerChunkZ;
+
+            /* Set properties to HexTerrainMaterial*/
+            if (showGrid)
+            {
+                
+                terrainMaterial.EnableKeyword("GRID_ON");
+            }
+            else
+            {
+                terrainMaterial.DisableKeyword("GRID_ON");
+            }
+
+            terrainMaterial.SetFloat(Shader.PropertyToID("_HexSize"), hexRadius);
+
 
             HexMeshUtility.SetUpUtility(hexRadius, blendPercent, elevationStep, terracesPerSlope, hexesPerChunkX, hexesPerChunkZ, waterElevationOffset, useTextures);
 
             GenerateChunks();
-            GenerateCells();   
+            GenerateCells();
+            PlacePawn();
         }
 
-
+        #region Construction
         /* Generate Chunks */
         private void GenerateChunks()
         {
@@ -182,44 +221,94 @@ namespace GTMT
             int localZ = z - chunkZ * hexesPerChunkZ;
             chunk.AddCell(localX + localZ * hexesPerChunkX, ref cell);
         }
+        #endregion
+
+
+        private void PlacePawn()
+        {
+            m_pawn = Instantiate(pawnPrefab);
+            m_pawn.transform.SetParent(transform, false);
+            m_pawn.Cell = m_cells[0];
+           
+            //m_pawn.transform.position = new Vector3(m_pawn.transform.position.x, m_pawn.transform.position.y + 0.5f, m_pawn.transform.position.z);
+        }
+
+
+
+        #region Input and Editing
+
+
+        /* Update Cell */
+        private void UpdateCell(HexCell cell)
+        {
+            if (cell.Color != color || cell.Elevation != elevation || cell.WaterLevel != waterLevel || cell.TerrainTypeIndex != terrainIndex)
+            {
+                // Edit Cell
+                cell.Color = color;
+                cell.SetElevation(elevation, elevationStep);
+                cell.WaterLevel = waterLevel;
+                cell.TerrainTypeIndex = terrainIndex;
+                cell.Reconstruct();
+            }
+        }
 
 
         /* Handle Input */
-        private void HandleInput()
+        private HexCell HandleInput()
         {
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if(Physics.Raycast(inputRay, out hit))
+            if (Physics.Raycast(inputRay, out hit))
             {
                 Vector3 position = transform.InverseTransformPoint(hit.point);
                 HexCoordinate coordinate = HexCoordinate.FromPosition(position, HexMeshUtility.InnerRadius, HexMeshUtility.OuterRadius);
                 int index = coordinate.X + coordinate.Z * m_cellCountX + coordinate.Z / 2;
-                if(index < m_cells.Length)
+                if (index < m_cells.Length)
                 {
-                    HexCell cell = m_cells[index];
-                    if (cell.Color != color || cell.Elevation != elevation || cell.WaterLevel != waterLevel || cell.TerrainTypeIndex != terrainIndex)
-                    {
-                        // Edit Cell
-                        cell.Color = color;
-                        cell.SetElevation(elevation, elevationStep);
-                        cell.WaterLevel = waterLevel;
-                        cell.TerrainTypeIndex = terrainIndex;
-                        cell.Refresh();
-                    }
+                    return m_cells[index]; 
                 }
             }
-        }
 
+            return null;
+        }
 
         /* Update */
         private void Update()
         {
-            if (Input.GetMouseButton(0) )
-            {
-                HandleInput();
-            }
-        }
 
+            if (Input.GetKey(KeyCode.LeftShift) )
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    HexCell cell = HandleInput();
+                    if (cell != null && !cell.IsUnderwater)
+                    {
+                        m_pawn.Travel(ref m_cells, cell);
+                    }
+                }
+               
+            }
+            else
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    HexCell x = HandleInput();
+                    if (x != null)
+                    {
+                        UpdateCell(x);
+                    }
+
+                }
+                if (Input.GetMouseButtonUp(0) && m_pawn.isTraveling)
+                {
+                   m_pawn.UpdateTravel(ref m_cells); 
+                }
+            }
+
+           
+        }
+        
+        #endregion
 
         #region Public Functions
         public HexCell[] GetCells()

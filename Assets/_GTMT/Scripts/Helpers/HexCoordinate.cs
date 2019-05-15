@@ -39,6 +39,13 @@ namespace GTMT
             this.z = z;
         }
 
+
+        public int DistanceTo(HexCoordinate other)
+        {
+            return Mathf.Abs(x - other.x) + Mathf.Abs(Y- other.Y) + Mathf.Abs(z - other.z) / 2;
+        }
+
+
         public static HexCoordinate FromOffsetCoordinates(int x, int z)
         {
             return new HexCoordinate(x - z / 2, z);             // (x - z / 2) (account for zig-zagging in x coord) 
@@ -75,6 +82,9 @@ namespace GTMT
 
             return new HexCoordinate(iX, iZ);
         }
+
+
+
 
         public override string ToString()
         {

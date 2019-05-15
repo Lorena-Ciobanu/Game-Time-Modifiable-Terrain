@@ -32,7 +32,7 @@ namespace GTMT
         {
             m_mesh = GetComponent<MeshFilter>().mesh = new Mesh();
             m_mesh.name = "Hex Mesh";
-            m_mesh.MarkDynamic();   // TODO check if this is an okay thing to do
+            m_mesh.MarkDynamic();  
 
             // Only add collider if needed
             if (useCollider)
@@ -81,9 +81,9 @@ namespace GTMT
             }
 
             m_mesh.RecalculateNormals();
-            m_mesh.RecalculateBounds();         // TODO see if these two are necessary
+            m_mesh.RecalculateBounds();         
             m_mesh.RecalculateTangents();
-            //m_mesh.UploadMeshData();          // TODO see if this makes sense
+            //m_mesh.UploadMeshData();         
 
             if (useCollider)
             {

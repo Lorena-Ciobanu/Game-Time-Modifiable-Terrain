@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-//TODO
-// https://medium.com/@calebfaith/how-to-use-texture-arrays-in-unity-a830ae04c98b
-// http://trevorius.com/scrapbook/unity/texture-arrays-in-unity/
 
 public class TextureArrayWizard : ScriptableWizard
 {

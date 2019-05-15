@@ -5,8 +5,9 @@ namespace GTMT
     [System.Serializable]
     public class HexCell
     {
-        private HexGrid m_grid;     // reference to hex grid (in order to get neighbor)
-        private HexChunk m_chunk;   // reference to chunk
+        private HexGrid m_grid;         // reference to hex grid (in order to get neighbor)
+        private HexChunk m_chunk;       // reference to chunk within the grid
+       
 
         [SerializeField]
         private int m_index;
@@ -32,6 +33,7 @@ namespace GTMT
         [SerializeField]
         private int m_terrainTypeIndex;
 
+        private int distance;
 
 
         /* Render */
@@ -112,7 +114,12 @@ namespace GTMT
         }
 
 
+        /* Distance & Path */
+        public int Distance { get; set; }               // used to store distance
+        public int Heuristic { get; set; }              // heuristic used in A*
+        public HexCell PathDirection { get; set; }      // remember the direction from the path
 
+        
 
         /* Set Chunk */
         public void SetChunk(HexChunk chunk)
@@ -174,6 +181,26 @@ namespace GTMT
             return HexMeshUtility.GetEdgeType(Elevation, otherCell.Elevation);
         }
 
+        public HexCoordinate GetCoordinate()
+        {
+            return m_hexCoordinate;
+        }
+
+        public int SearchPriority
+        {
+            get
+            {
+                return distance + Heuristic;
+            }
+        }
+
+        public Vector3 Position
+        {
+            get
+            {
+                return m_center;
+            }
+        }
 
         #endregion
 
@@ -181,7 +208,7 @@ namespace GTMT
         /* Refresh
          *  - responsable of calling refresh on entire chunk to reconstruct
          */
-        public void Refresh()
+        public void Reconstruct()
         {
             if (m_chunk)
             {
